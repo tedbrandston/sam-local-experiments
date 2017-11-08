@@ -1,5 +1,6 @@
 
 import json
+import os
 
 def serializable(obj):
     """Just trying to get the serializable bits of context"""
@@ -16,6 +17,7 @@ def echo(event, context):
             'event': event,
             'context': {
                 key: getattr(context, key) for key in dir(context) if serializable(getattr(context, key))
-            }
+            },
+            'environ': { key: os.environ[key] for key in os.environ }
         }, indent=2)
     }
