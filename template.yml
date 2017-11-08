@@ -42,7 +42,7 @@ Resources:
       Runtime: python3.6
       Environment:
         Variables:
-          TABLE: !If [IsProd, !Ref MyTable, 'some value']
+          TABLE: !If [IsProd, !Ref MyTable, "some value"]
       Events:
         Submit:
           Type: Api
