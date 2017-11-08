@@ -1,6 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+
 Description: Example Lambda
+
 Resources:
   EchoHandler:
     Type: AWS::Serverless::Function
@@ -8,9 +10,41 @@ Resources:
       CodeUri: bundle.zip
       Handler: example.echo
       Runtime: python3.6
+      Environment:
+        Variables:
+          TABLE: !Ref MyTable
       Events:
         Submit:
           Type: Api
           Properties:
             Path: /
             Method: get
+
+  UseTableHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: bundle.zip
+      Handler: example.use_table
+      Runtime: python3.6
+      Environment:
+        Variables:
+          TABLE: !Ref MyTable
+      Events:
+        Submit:
+          Type: Api
+          Properties:
+            Path: /use-table
+            Method: get
+
+  MyTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "Key"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "Key"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
