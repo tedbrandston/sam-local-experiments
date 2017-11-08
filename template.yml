@@ -3,6 +3,20 @@ Transform: AWS::Serverless-2016-10-31
 
 Description: Example Lambda
 
+# taken almost verbatim from
+# http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/conditions-section-structure.html
+Parameters:
+  EnvType:
+    Description: Environment type.
+    Default: test
+    Type: String
+    AllowedValues:
+      - prod
+      - test
+    ConstraintDescription: must specify prod or test.
+Conditions:
+  IsProd: !Equals [ !Ref EnvType, prod ]
+
 Resources:
   EchoHandler:
     Type: AWS::Serverless::Function
@@ -28,7 +42,7 @@ Resources:
       Runtime: python3.6
       Environment:
         Variables:
-          TABLE: !Ref MyTable
+          TABLE: !If [IsProd, !Ref MyTable, 'some value']
       Events:
         Submit:
           Type: Api
